@@ -1,35 +1,79 @@
-#include <iostream>
-#include <vector>
+/*
+    C   ->  conjunto de candidatos
+    S   ->  conjunto de seleccionados
+    R   ->  conjunto de rechazados
 
-std::vector<int> cambioMonedas(int cantidad, std::vector<int> monedas) {
-    std::vector<int> solucion;
-    int i = monedas.size() - 1; // Comenzar con la moneda de mayor valor
-    
-    while (cantidad > 0 && i >= 0) {
-        if (monedas[i] <= cantidad) {
-            int numMonedas = cantidad / monedas[i];
-            cantidad -= numMonedas * monedas[i];
-            for (int j = 0; j < numMonedas; j++) {
-                solucion.push_back(monedas[i]);
-            }
-        }
-        i--;
+*/
+
+#include "iostream"
+#include "vector"
+#include <algorithm>
+#include <cmath>
+using namespace std;
+
+#define INF 256
+
+struct Moneda
+{
+    int Tipo;
+    int Cantidad = INF;
+    Moneda(int i)
+    {
+        Tipo = i;
     }
+    Moneda(int i, int cant)
+    {
+        Tipo = i;
+        Cantidad = cant;
+    }
+};
+
+
+
+bool algoritmoVorazMoneda(int P, vector<Moneda>& candidatos, vector<Moneda>&solucion)
+{
+    int act=0;
+    int j = candidatos.size() - 1;
     
-    return solucion;
+    while (act!=P)
+    {
+        if(j==-1 && act!=P) { return false;}
+        if(candidatos[j].Tipo < (P-act))
+        {
+            int typeMoneda = candidatos[j].Tipo;
+            
+            int numMonedas = floor( (P-act)/typeMoneda);
+
+            solucion.push_back(Moneda(typeMoneda, numMonedas));
+            act+=(numMonedas*typeMoneda);
+
+        }
+        
+        j--;
+    }
+    return true;
 }
 
-int main() {
-    int cantidad = 68;
-    std::vector<int> monedas = {1, 2, 5, 10, 20, 50}; // Valores de las monedas disponibles
-    
-    std::vector<int> resultado = cambioMonedas(cantidad, monedas);
-    
-    std::cout << "Cambio para " << cantidad << " unidades: ";
-    for (int i = 0; i < resultado.size(); i++) {
-        std::cout << resultado[i] << " ";
+
+int main()
+{
+    //vector<Moneda> monedas = {1, 90,100};
+    vector<Moneda> monedas = {1, 2, 5, 10, 20, 50, 100, 200};
+    vector<Moneda>solucion;
+    int P = 389;
+    if(algoritmoVorazMoneda(P, monedas, solucion))
+    {
+        cout<<"Repartir "<<P<<" centimos"<<endl;
+        cout<<"Solucion: "<<endl;
+        cout<<"Moneda\tCantidad"<<endl;
+        for (auto i: solucion)
+        {
+            std::cout<<i.Tipo<<"\t"<<i.Cantidad<<endl;
+        }
     }
-    std::cout << std::endl;
+    else
+        cout<<"No hay solucion"<<endl;
+
     
     return 0;
 }
