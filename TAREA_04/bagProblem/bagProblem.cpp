@@ -1,52 +1,111 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 
-struct Objeto {
+struct Bag {
     int peso;
-    int valor;
+    float beneficio;
+    
 };
+typedef std::vector<Bag>::iterator it;
 
-bool compararPorRatio(const Objeto& a, const Objeto& b) {
-    double ratioA = static_cast<double>(a.valor) / a.peso;
-    double ratioB = static_cast<double>(b.valor) / b.peso;
-    return ratioA > ratioB;
+
+it seleccionarCrit1(std::vector<Bag> & C)
+{
+       it i = std::max_element(C.begin(),C.end(),[](const Bag &a, const Bag &b){return a.beneficio <  b.beneficio;} );
+      
+       return i;
 }
 
-std::vector<Objeto> obtenerMochila(int capacidadMochila, std::vector<Objeto> objetos) {
-    std::sort(objetos.begin(), objetos.end(), compararPorRatio);
+it seleccionarCrit2(std::vector<Bag> & C)
+{
+       it i = std::min_element(C.begin(),C.end(),[](const Bag &a, const Bag &b){return a.beneficio <  b.beneficio;} );
+        
+       return i;
+}
+
+it seleccionarCrit3(std::vector<Bag> & C)
+{
+       it i = std::max_element(C.begin(),C.end(),[](const Bag &a, const Bag &b){return a.beneficio/a.peso <  b.beneficio/b.peso;} );
+      
+       return i;
+}
+
+void getBag(int M, std::vector<Bag> &candidatos, std::vector<Bag> &solucion, it (*func)(std::vector<Bag> &))
+{
+    solucion.clear();
+    int pesoAct = 0;
     
-    std::vector<Objeto> mochila;
-    int capacidadRestante = capacidadMochila;
-    
-    for (const Objeto& objeto : objetos) {
-        if (objeto.peso <= capacidadRestante) {
-            mochila.push_back(objeto);
-            capacidadRestante -= objeto.peso;
+    while (pesoAct<M)
+    {
+        it i = func(candidatos);
+
+        if(pesoAct + i->peso <= M)
+        {
+            
+            int numBag =1;
+            float beneficio = numBag*i->beneficio;
+            solucion.push_back(Bag {i->peso,beneficio});
+            pesoAct+= i->peso;
+        }else
+        {
+            int numBag = M-pesoAct;
+            float beneficio = std::round((numBag*i->beneficio / i->peso )*1000)/1000;
+            
+            solucion.push_back(Bag{M-pesoAct, beneficio});
+            pesoAct=M;
         }
-        else {
-            double fraccion = static_cast<double>(capacidadRestante) / objeto.peso;
-            Objeto objetoFraccionado;
-            objetoFraccionado.peso = capacidadRestante;
-            objetoFraccionado.valor = static_cast<int>(fraccion * objeto.valor);
-            mochila.push_back(objetoFraccionado);
-            break;
-        }
+        if(candidatos.empty()) return;
+
+        candidatos.erase(i);
     }
     
-    return mochila;
+
 }
 
+float getBeneficio(std::vector<Bag>&S )
+{
+    float s=0;
+    for(auto a: S)
+        s+=a.beneficio;
+    return s;
+}
+
+void printBenecios(std::vector<Bag> &solucion)
+{
+    std::cout << "\tObjetos en la mochila: " << std::endl;
+    for (Bag& Bag : solucion) {
+        std::cout << "\tPeso: " << Bag.peso << ", beneficio: " << Bag.beneficio << std::endl;
+    }
+    std::cout<<"\tBeneficio total: "<<getBeneficio(solucion)<<std::endl;
+    std::cout<<std::endl;
+    solucion.clear();
+}
 int main() {
-    int capacidadMochila = 50;
-    std::vector<Objeto> objetos = {{10, 60}, {20, 100}, {30, 120}};
+    int capacidadMochila = 10;
+    //int capacidadMochila = 20;
+    std::vector<Bag> candidatos;
+    //std::vector<Bag> candidatos =  {{18, 25}, {15, 24}, {10, 15}};
+    std::vector<Bag> solucion;
     
-    std::vector<Objeto> mochila = obtenerMochila(capacidadMochila, objetos);
+    candidatos =  {{10, 10}, {3, 9}, {3, 9}, {4, 9}};
+    std::cout<<"Solucion Criterio 1: "<<std::endl;
+    getBag(capacidadMochila, candidatos, solucion, seleccionarCrit1);
+    printBenecios(solucion);
     
-    std::cout << "Objetos en la mochila: " << std::endl;
-    for (const Objeto& objeto : mochila) {
-        std::cout << "Peso: " << objeto.peso << ", Valor: " << objeto.valor << std::endl;
-    }
+    candidatos =  {{10, 10}, {3, 9}, {3, 9}, {4, 9}};
+    std::cout<<"Solucion Criterio 2: "<<std::endl;
+    getBag(capacidadMochila, candidatos, solucion, seleccionarCrit2);
+    printBenecios(solucion);
+    
+    candidatos =  {{10, 10}, {3, 9}, {3, 9}, {4, 9}};
+    std::cout<<"Solucion Criterio 3: "<<std::endl;
+    getBag(capacidadMochila, candidatos, solucion, seleccionarCrit3);
+    printBenecios(solucion);
+
+    
+    
     
     return 0;
 }
