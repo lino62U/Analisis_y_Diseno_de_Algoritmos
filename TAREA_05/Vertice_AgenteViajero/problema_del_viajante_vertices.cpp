@@ -198,7 +198,7 @@ void printSolution(vector<Vertex<V,A> *>& solucion )
             
         }
         band=true;
-        costoTotal+=  k->m_Costo;
+        
     }
     cout<<"  "<<solucion[0]->m_Costo<<endl;
     
@@ -247,12 +247,12 @@ void test1()
     cout<<"El ultimo nodo implica el bucle: es decir apunta al nodo inicial"<<endl;
     
     
-    G.heuristicaVecinoMasCercano("1",solucion);
-    printSolution(solucion);
-    
-    // cout<<"En caso de pesos iguales se esta tomanto el nodo mas cercano segun el orden que se ingreso a la lista de vertices"<<endl;
-    // G.heuristicaVecinoMasCercano("5",solucion);
+    // G.heuristicaVecinoMasCercano("1",solucion);
     // printSolution(solucion);
+    
+    cout<<"En caso de pesos iguales se esta tomanto el nodo mas cercano segun el orden que se ingreso a la lista de vertices"<<endl;
+    G.heuristicaVecinoMasCercano("5",solucion);
+    printSolution(solucion);
     
 }
 
