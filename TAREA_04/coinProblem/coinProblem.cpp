@@ -57,10 +57,11 @@ bool algoritmoVorazMoneda(int P, vector<Moneda>& candidatos, vector<Moneda>&solu
 
 int main()
 {
-    //vector<Moneda> monedas = {1, 90,100};
-    vector<Moneda> monedas = {1, 2, 5, 10, 20, 50, 100, 200};
+    vector<Moneda> monedas = {1, 90,100};
+    //vector<Moneda> monedas = {1, 2, 5, 10, 20, 50, 100, 200};
     vector<Moneda>solucion;
-    int P = 389;
+    //int P = 389;
+    int P = 180;
     if(algoritmoVorazMoneda(P, monedas, solucion))
     {
         cout<<"Repartir "<<P<<" centimos"<<endl;
