@@ -90,6 +90,13 @@ int main() {
     std::vector<Bag> solucion;
     
     candidatos =  {{10, 10}, {3, 9}, {3, 9}, {4, 9}};
+    std::cout<<"Candidatos"<<std::endl;
+    for (Bag& Bag: candidatos)
+    {
+        std::cout << "\tPeso: " << Bag.peso << ", beneficio: " << Bag.beneficio << std::endl;
+    }
+    
+
     std::cout<<"Solucion Criterio 1: "<<std::endl;
     getBag(capacidadMochila, candidatos, solucion, seleccionarCrit1);
     printBenecios(solucion);
