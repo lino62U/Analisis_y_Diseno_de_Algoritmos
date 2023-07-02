@@ -13,7 +13,7 @@ class Persona{
 
 template <class T>
 bool operator>=(const T a, const T b){
-    if(a.edad%4==0 && b.edad%4!=0)
+    if(a.edad >=  b.edad)
         return true;
     return false;
 }
@@ -101,7 +101,7 @@ int main() {
 
   
   // perform quicksort on data
-  quickSort(ptr, 0, 3,comparaNombres);
+  quickSort(ptr, 0, 3,comparaEdad);
   
   cout << "Sorted array in ascending order: \n";
 	mostrarClase(ptr,4);
