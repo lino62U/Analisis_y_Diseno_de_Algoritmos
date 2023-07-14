@@ -1,41 +1,40 @@
+#include <iostream>
+#include <algorithm>
+#include <cmath>
+#include <iomanip>
 
-#include<cstdio>
-#include<algorithm>
-#include<cmath>
-struct Point
-{
+struct Point {
     double x, y;
-    double getLen(const Point& a)
-    {
-        return sqrt((a.x - x)*(a.x - x) + (a.y - y)*(a.y - y));
+
+    double getLen(const Point& a) {
+        return std::sqrt((a.x - x) * (a.x - x) + (a.y - y) * (a.y - y));
     }
+};
 
-}point[10000];
-int main()
-{
+int main() {
     int n, i;
-    while (scanf("%d", &n) && n)
-    {
+    while (std::cin >> n && n) {
+        Point point[10000];
         for (i = 0; i < n; i++)
-            scanf("%lf%lf", &point[i].x, &point[i].y);
+            std::cin >> point[i].x >> point[i].y;
 
-        std::sort(point, point + n, [](const Point& a, const Point& b)->bool{return a.x < b.x; });
+        std::sort(point, point + n, [](const Point& a, const Point& b) -> bool { return a.x < b.x; });
 
         double ans = 10000;
-        for (i = 0; i < n; i++)
-            for (int j = i + 1; j < n; j++)
-            {
-            if (point[i].x + ans < point[j].x)
-                break;
-            double d = point[i].getLen(point[j]);
-            if (d < ans)
-                ans = d;
+        for (i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (point[i].x + ans < point[j].x)
+                    break;
+                double d = point[i].getLen(point[j]);
+                if (d < ans)
+                    ans = d;
             }
+        }
 
         if (ans == 10000)
-            puts("INFINITY");
+            std::cout << "INFINITY" << std::endl;
         else
-            printf("%.4lf\n", ans);
+            std::cout << std::fixed << std::setprecision(4) << ans << std::endl;
     }
 
     return 0;
