@@ -3,41 +3,49 @@
 
 using namespace std;
 
-const int N = 4; // Tamaño del alfabeto Σ
+vector<int> longestIncreasingSubsequence(const vector<int>& nums) {
+    int n = nums.size();
+    vector<int> lengths(n, 1); // Inicialmente, cada posición es una secuencia de longitud 1
 
-void transitiveClosure(vector<vector<bool>>& orderRelation) {
-    for (int k = 0; k < N; ++k) {
-        for (int i = 0; i < N; ++i) {
-            for (int j = 0; j < N; ++j) {
-                orderRelation[i][j] = orderRelation[i][j] || (orderRelation[i][k] && orderRelation[k][j]);
+    for (int i = 1; i < n; ++i) {
+        for (int j = 0; j < i; ++j) {
+            if (nums[i] > nums[j] && lengths[i] < lengths[j] + 1) {
+                lengths[i] = lengths[j] + 1;
             }
         }
     }
-}
 
-bool precedes(const vector<vector<bool>>& orderRelation, char u, char v) {
-    int uIndex = u - 'a';
-    int vIndex = v - 'a';
-    return orderRelation[uIndex][vIndex];
+    int maxLength = 0, endIndex = 0;
+    for (int i = 0; i < n; ++i) {
+        if (lengths[i] > maxLength) {
+            maxLength = lengths[i];
+            endIndex = i;
+        }
+    }
+
+    vector<int> lis;
+    while (maxLength > 0) {
+        lis.insert(lis.begin(), nums[endIndex]);
+        --maxLength;
+        --endIndex;
+        while (endIndex >= 0 && lengths[endIndex] != maxLength) {
+            --endIndex;
+        }
+    }
+
+    return lis;
 }
 
 int main() {
-    vector<vector<bool>> orderRelation(N, vector<bool>(N, false));
+    vector<int> nums = {11, 17, 5, 8, 6, 4, 7, 12, 3};
 
-    // Definir la relación de orden aquí (rellenar la matriz orderRelation)
+    vector<int> lis = longestIncreasingSubsequence(nums);
 
-    transitiveClosure(orderRelation);
-
-    char u, v;
-    cout << "Ingresa dos elementos del alfabeto (a, b, c, d): ";
-    cin >> u >> v;
-
-    if (precedes(orderRelation, u, v)) {
-        cout << u << " precede a " << v << " en el orden Φ." << endl;
-    } else {
-        cout << u << " no precede a " << v << " en el orden Φ." << endl;
+    cout << "Secuencia creciente de máxima longitud: ";
+    for (int num : lis) {
+        cout << num << " ";
     }
+    cout << endl;
 
     return 0;
 }
-
